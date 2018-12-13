@@ -1,6 +1,12 @@
 package mx.dabbot.pruebadab;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -35,6 +41,30 @@ public class MainActivity extends AppCompatActivity {
     String infoTwit="Aqui va el twit seleccionado";
     JSONArray tweets;
     MyFirebaseInstanceIdService a = new MyFirebaseInstanceIdService();
+    NotificationCompat.Builder mBuilder;
+
+
+    //notificaciones locales-------------------------------------------------------------------------------------------------
+    private void addNotification() {
+        // Builds your notification
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.mipmap.ic_launcher_round)
+                .setContentTitle("Dab Bot")
+                .setContentText("¿Hay alguna emergencia o evento cercano que desees compartir a la comunidad?");
+
+        // Creates the intent needed to show the notification
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(contentIntent);
+
+        // Add as notification
+        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.notify(0, builder.build());
+    }
+
+
+
+
 
 
 
@@ -50,14 +80,22 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
 
+        //------ notificaciones programadas
+
+        time timer = new time();
+        timer.execute();
+
+        //token de dispositivo---------------------------------
+
          a.onTokenRefresh();
+
+         //--------------------------------------------
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         listview = (ListView) findViewById(R.id.listTwits);
 
-        //cliente---------------------------
-        //String tweets = "";
+        //cliente api---------------------------
         OkHttpClient client = new OkHttpClient();
 
         String url = "https://infinite-crag-52022.herokuapp.com/noticias_recientes";
@@ -109,10 +147,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+
                 if (position >= 0){
 
 
-                    //json------
+                    //response a json y mostrar en activity------
+
+                    addNotification();
                     try {
                         JSONObject objeto = new JSONObject(infoTwit); //Creamos un objeto JSON a partir de la cadena
                         JSONArray tweets_temporal = objeto.optJSONArray("tweets"); //cogemos cada uno de los elementos dentro de la etiqueta "tweets"
@@ -127,6 +168,8 @@ public class MainActivity extends AppCompatActivity {
                         myIntent.putExtra("twit", tweets.getJSONObject(position).getString("texto"));
                         //myIntent.putExtra("usuario",tweets.getJSONObject(position).getString("usuario"));
                         startActivity(myIntent);
+
+
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -143,6 +186,46 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    }//fin de oncreate
+
+
+
+
+
+
+
+
+
+    //clase de time
+    public class time extends AsyncTask<Void,Integer,Boolean> {
+
+        //hilo que se ejecutara en segundo plano----------------------------------------------------------
+        public void hilo(){
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public void ejecutar(){
+            time timer = new time();
+            timer.execute();
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            for(int i=1;i<=20;i++){
+                hilo();
+            }
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            ejecutar();
+            addNotification();
+        }
     }
 
 
