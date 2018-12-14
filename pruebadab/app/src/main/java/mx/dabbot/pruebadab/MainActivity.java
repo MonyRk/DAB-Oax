@@ -1,6 +1,5 @@
 package mx.dabbot.pruebadab;
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -14,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 
 import org.json.JSONArray;
@@ -32,17 +32,7 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    ListView listview;
-    List list = new ArrayList();
-    ArrayAdapter adapter;
-    //cantidad es el total de twits que se mostraran
-    int cantidad=15;
-    //infoTwit es el twit completo
     String infoTwit="Aqui va el twit seleccionado";
-    JSONArray tweets;
-    MyFirebaseInstanceIdService a = new MyFirebaseInstanceIdService();
-    NotificationCompat.Builder mBuilder;
-
 
     //notificaciones locales-------------------------------------------------------------------------------------------------
     private void addNotification() {
@@ -62,38 +52,17 @@ public class MainActivity extends AppCompatActivity {
         manager.notify(0, builder.build());
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    Button botonbloqueos, botonaccidentes, botonreportes;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
         //------ notificaciones programadas
 
         time timer = new time();
         timer.execute();
 
-        //token de dispositivo---------------------------------
-
-         a.onTokenRefresh();
-
-         //--------------------------------------------
-
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        listview = (ListView) findViewById(R.id.listTwits);
 
         //cliente api---------------------------
         OkHttpClient client = new OkHttpClient();
@@ -112,85 +81,85 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call call, Response response) throws IOException {
                 if(response.isSuccessful()){
                     //Log.d("qqqq",response.body().string());
-                   infoTwit = response.body().string();
-                   infoTwit = "{\"tweets\":"+infoTwit+"}";
-                   //Log.d("qqqq",infoTwit);
+                    infoTwit = response.body().string();
+                    infoTwit = "{\"tweets\":"+infoTwit+"}";
+                    Log.d("qqqq",infoTwit);
 
 
                 }
             }
         });
-        //---------------------------------------
+//---------------------------------------
 
 
 
+    botonbloqueos = (Button) findViewById(R.id.botonbloqueos);
+    botonbloqueos.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent myIntent = new Intent(MainActivity.this, ListActivity.class);
 
-
-
-
-
-
-
-
-
-
-        //en vez de agregar i se deben agregar los twits---------------
-        for (int i = 1; i <= cantidad; i++) {
-
-            list.add(i);
-
-        }
-        adapter = new ArrayAdapter(MainActivity.this, android.R.layout.simple_list_item_1, list);
-        listview.setAdapter(adapter);
-
-        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-
-                if (position >= 0){
-
-
-                    //response a json y mostrar en activity------
-
-                    addNotification();
-                    try {
-                        JSONObject objeto = new JSONObject(infoTwit); //Creamos un objeto JSON a partir de la cadena
-                        JSONArray tweets_temporal = objeto.optJSONArray("tweets"); //cogemos cada uno de los elementos dentro de la etiqueta "tweets"
-                        tweets = tweets_temporal;
-                        //Log.d("qqqq",tweets.getString(0));
-
-
-                        Intent myIntent = new Intent(view.getContext(), BackActivity.class);
-                        Log.d("qqqq",tweets.getJSONObject(position).getString("texto"));
-
-
-                        myIntent.putExtra("twit", tweets.getJSONObject(position).getString("texto"));
-                        //myIntent.putExtra("usuario",tweets.getJSONObject(position).getString("usuario"));
-                        startActivity(myIntent);
-
-
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    //---------------------
-
-                }
-
-
+            JSONObject bloqueos = null; //Creamos un objeto JSON a partir de la cadena
+            try {
+                bloqueos = new JSONObject(infoTwit);
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
+            JSONArray tweets_temporal = bloqueos.optJSONArray("tweets"); //cogemos cada uno de los elementos dentro de la etiqueta "tweets"
+
+
+            myIntent.putExtra("respuesta",infoTwit);
+            myIntent.putExtra("categoria","bloqueo");
+            startActivity(myIntent);
         }
-        );
-        //------------------------------------------------------------------
+    });
 
 
+        botonaccidentes = (Button) findViewById(R.id.accidentes);
+        botonaccidentes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent myIntent = new Intent(MainActivity.this, ListActivity.class);
 
-    }//fin de oncreate
+                JSONObject bloqueos = null; //Creamos un objeto JSON a partir de la cadena
+                try {
+                    bloqueos = new JSONObject(infoTwit);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                JSONArray tweets_temporal = bloqueos.optJSONArray("tweets"); //cogemos cada uno de los elementos dentro de la etiqueta "tweets"
 
 
+                myIntent.putExtra("respuesta",infoTwit);
+                myIntent.putExtra("categoria","accidente");
+                startActivity(myIntent);
+            }
+        });
 
 
+        botonreportes = (Button) findViewById(R.id.botonreportes);
+        botonreportes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent myIntent = new Intent(MainActivity.this, ListActivity.class);
+
+
+                JSONObject bloqueos = null; //Creamos un objeto JSON a partir de la cadena
+                try {
+                    bloqueos = new JSONObject(infoTwit);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                JSONArray tweets_temporal = bloqueos.optJSONArray("tweets"); //cogemos cada uno de los elementos dentro de la etiqueta "tweets"
+
+
+                myIntent.putExtra("respuesta",infoTwit);
+                myIntent.putExtra("categoria","emergencia");
+                startActivity(myIntent);
+            }
+        });
+
+    }
 
 
 
@@ -229,4 +198,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
 }
+
+
+
+
+

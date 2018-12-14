@@ -29,10 +29,8 @@ public class BackActivity extends AppCompatActivity {
     private void recibirInfo (){
             Bundle extras = getIntent().getExtras();
             String infot =  extras.getString("twit");
-            //String usuario =  extras.getString("usuario");
         twitCompleto = (TextView) findViewById(R.id.twitCompleto);
         twitCompleto.setText(infot);
-        //twitCompleto.setText(usuario);
 
     }
 
