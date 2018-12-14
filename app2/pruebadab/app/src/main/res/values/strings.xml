@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">DAB Oax</string>
+    <string name="textview">twit1</string>
+    <string name="twit2">TextView2</string>
+    <string name="twit3">TextView3</string>
+    <string name="hola">Hola</string>
+    <string name="bloqueos">Bloqueos</string>
+    <string name="accidentes">Accidentes</string>
+    <string name="reportes">Reportes</string>
+</resources>
