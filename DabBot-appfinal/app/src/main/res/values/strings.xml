@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">DabBot</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_bloqueos">ActivityBloqueos</string>
+    <string name="title_activity_asaltos">ActivityAsaltos</string>
+    <string name="title_activity_emergencias">ActivityEmergencias</string>
+    <string name="title_activity_reportes">ActivityReportes</string>
+    <string name="title_activity_lista">Lista</string>
+    <string name="title_activity_tweet">Tweet</string>
+    <string name="texto_tweet">aqui va el texto del tweet</string>
+    <string name="texto_ubicacion">aqui va el texto de la ubicacin</string>
+    <string name="texto_ubicacion1">aqui va el texto de la ubicacion</string>
+</resources>
